@@ -63,11 +63,13 @@ exports.delete = (req, res) => {
 };
 
 exports.list = (req, res) => {
-    User.find({}, (err, users) => {
-        if (err) {
-            return res.status(httpResponses.SERVER_ERROR).send(errorObjects.SERVER_ERROR);
-        }
+    User.find({})
+        .sort(req.query.sort || '')
+        .exec((err, users) => {
+            if (err) {
+                return res.status(httpResponses.SERVER_ERROR).send(errorObjects.SERVER_ERROR);
+            }
 
-        return res.status(httpResponses.OK).send(users);
-    });
+            return res.status(httpResponses.OK).send(users);
+        });
 };
