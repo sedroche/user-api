@@ -1,0 +1,19 @@
+{
+  "name": "user-api",
+  "version": "1.0.0",
+  "description": "Simple CRUDL API",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sedroche/user-api.git"
+  },
+  "author": "John Roche",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sedroche/user-api/issues"
+  },
+  "homepage": "https://github.com/sedroche/user-api#readme"
+}
