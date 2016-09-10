@@ -5,6 +5,24 @@ const config = require('../config');
 const httpResponses = config.httpResponses;
 const errorObjects = config.errorObjects;
 
+var parseFilterQuery = (filter) => {
+    if (typeof filter !== 'string') return;
+
+    filter = filter.split(' ');
+    if (filter.length < 3) return null;
+
+    let filterObject = {};
+    let comparator = {};
+
+    let path = filter[0];
+    let operator = filter[1];
+
+    comparator[operator] = filter.length == 3 ? filter[2] : filter.splice(2, filter.length).join(' ');
+    filterObject[path] = comparator;
+
+    return filterObject;
+};
+
 exports.create = (req, res) => {
     let userModel = new User(req.body);
     userModel.save((err) => {
@@ -63,7 +81,9 @@ exports.delete = (req, res) => {
 };
 
 exports.list = (req, res) => {
-    User.find({})
+    let filterObject = req.query.filter ? parseFilterQuery(req.query.filter) : {};
+
+    User.find(filterObject)
         .sort(req.query.sort || '')
         .exec((err, users) => {
             if (err) {

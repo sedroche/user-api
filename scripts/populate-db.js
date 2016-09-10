@@ -10,7 +10,7 @@ db.once('open', function() {
     console.log('Connected to Mongo Database');
 
     User.collection.insert(userList, () => {
-            console.log('Users added to Database');
+        console.log('Users added to Database');
     });
 
     db.close();
