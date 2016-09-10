@@ -4,8 +4,9 @@ const app = require('express')();
 const userRoutes = require('./routes/user');
 const config = require('./config.js');
 const db = require('mongoose').connect(config.MONGO_URL).connection;
+const jsonParser = require('body-parser').json();
 
-app.post('/user', userRoutes.create);
+app.post('/user', jsonParser, userRoutes.create);
 app.get('/user/:id', userRoutes.read);
 app.put('/user/:id', userRoutes.update);
 app.delete('/user/:id', userRoutes.delete);
