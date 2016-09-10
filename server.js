@@ -3,6 +3,7 @@
 const app = require('express')();
 const userRoutes = require('./routes/user');
 const config = require('./config.js');
+const db = require('mongoose').connect(config.MONGO_URL).connection;
 
 app.post('/user', userRoutes.create);
 app.get('/user/:id', userRoutes.read);
@@ -11,9 +12,16 @@ app.delete('/user/:id', userRoutes.delete);
 app.get('/users', userRoutes.list);
 
 app.use((err, req, res, next) => {
-    res.status(config.httpResponses.SERVER_ERROR).send({error: 'Server Error'});
+    res.status(config.httpResponses.SERVER_ERROR).send({ error: err });
 });
 
-app.listen(config.APP_PORT, () => console.log('User API listening on port 3000!'));
+db.on('error', console.error.bind(console, 'Error connecting to Mongo Database:'));
+db.once('open', function() {
+    console.log('Connected to Mongo Database');
+
+    userRoutes.db = db;
+
+    app.listen(config.APP_PORT, () => console.log('User API listening on port 3000!'));
+});
 
 module.exports = app;
