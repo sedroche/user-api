@@ -46,6 +46,17 @@ const sucessUserName = 'tinywolf709';
 const successUserURL = apiUrl + sucessUserName;
 const failUserUrl = apiUrl + 'idDoesNotExist';
 
+var isArraySorted = (array, descending) => {
+    for (let i = 0; i < array.length - 1; i++) {
+        let first = descending ? array[i + 1] : array[i];
+        let second = descending ? array[i] : array[i + 1];
+        if (first > second) {
+            return false;
+        }
+    }
+    return true;
+};
+
 describe('User API Integration Tests', () => {
 
     it('Should create a new user', (done) => {
@@ -176,4 +187,37 @@ describe('User API Integration Tests', () => {
             });
     });
 
+    it('Should list all users sorted by email ascending', (done) => {
+        supertest(app)
+            .get(userListUrl + '?sort=email')
+            .expect(httpResponses.OK)
+            .end((err, response) => {
+
+                let users = response.body;
+
+                assert.ok(!err);
+                assert.ok(Array.isArray(users));
+
+                assert.ok(isArraySorted(users, false));
+
+                return done();
+            });
+    });
+
+    it('Should list all users sorted by email descending', (done) => {
+        supertest(app)
+            .get(userListUrl + '?sort=-email')
+            .expect(httpResponses.OK)
+            .end((err, response) => {
+
+                let users = response.body;
+
+                assert.ok(!err);
+                assert.ok(Array.isArray(users));
+
+                assert.ok(isArraySorted(users, true));
+
+                return done();
+            });
+    });
 });
