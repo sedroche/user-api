@@ -35,7 +35,17 @@ exports.read = (req, res) => {
 };
 
 exports.update = (req, res) => {
-    res.status(httpResponses.OK).send('update');
+    User.findOneAndUpdate({ username: req.params.id }, { $set: req.body }, { 'new': true }, (err, user) => {
+        if (err) {
+            return res.status(httpResponses.SERVER_ERROR).send(errorObjects.SERVER_ERROR);
+        }
+
+        if (!user) {
+            return res.status(httpResponses.NOT_FOUND).send(errorObjects.NOT_FOUND_ERROR);
+        }
+
+        return res.status(httpResponses.OK).send(user);
+    });
 };
 
 exports.delete = (req, res) => {
