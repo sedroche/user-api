@@ -6,7 +6,18 @@ const httpResponses = config.httpResponses;
 const errorObjects = config.errorObjects;
 
 exports.create = (req, res) => {
-    res.status(httpResponses.OK).send('create');
+    let user = new User(req.body);
+    user.save(req.body, function(err, user) {
+        if (err) {
+            if (err.code === config.DUPLICATE_KEY_CODE) {
+                return res.status(httpResponses.CONFLICT).send(errorObjects.DUPLICATE_KEY_ERROR);
+            }
+
+            return res.status(httpResponses.SERVER_ERROR).send(errorObjects.SERVER_ERROR);
+        }
+
+        return res.status(httpResponses.CREATED).send(user);
+    });
 };
 
 exports.read = (req, res) => {
@@ -19,7 +30,7 @@ exports.read = (req, res) => {
             return res.status(httpResponses.NOT_FOUND).send(errorObjects.NOT_FOUND_ERROR);
         }
 
-        res.status(httpResponses.OK).send(user);
+        return res.status(httpResponses.OK).send(user);
     });
 };
 
