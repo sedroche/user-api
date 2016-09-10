@@ -83,7 +83,7 @@ exports.delete = (req, res) => {
 exports.list = (req, res) => {
     let filterObject = req.query.filter ? parseFilterQuery(req.query.filter) : {};
 
-    User.find(filterObject)
+    User.find(filterObject || {})
         .sort(req.query.sort || '')
         .exec((err, users) => {
             if (err) {
