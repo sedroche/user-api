@@ -63,5 +63,11 @@ exports.delete = (req, res) => {
 };
 
 exports.list = (req, res) => {
-    res.status(httpResponses.OK).send('list');
+    User.find({}, (err, users) => {
+        if (err) {
+            return res.status(httpResponses.SERVER_ERROR).send(errorObjects.SERVER_ERROR);
+        }
+
+        return res.status(httpResponses.OK).send(users);
+    });
 };

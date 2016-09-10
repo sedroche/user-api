@@ -41,6 +41,7 @@ const user = {
 };
 
 const apiUrl = '/user/';
+const userListUrl = '/users/';
 const sucessUserName = 'tinywolf709';
 const successUserURL = apiUrl + sucessUserName;
 const failUserUrl = apiUrl + 'idDoesNotExist';
@@ -164,11 +165,13 @@ describe('User API Integration Tests', () => {
 
     it('Should list all users', (done) => {
         supertest(app)
-            .get('/users')
+            .get(userListUrl)
             .expect(httpResponses.OK)
             .end((err, response) => {
+
                 assert.ok(!err);
-                assert.ok(response.text === 'list');
+                assert.ok(Array.isArray(response.body));
+
                 return done();
             });
     });
