@@ -220,4 +220,42 @@ describe('User API Integration Tests', () => {
                 return done();
             });
     });
+
+    it('Should filter all users by female gender', (done) => {
+        supertest(app)
+            .get(userListUrl + '?filter=gender $eq female')
+            .expect(httpResponses.OK)
+            .end((err, response) => {
+
+                let users = response.body;
+
+                assert.ok(!err);
+                assert.ok(Array.isArray(users));
+
+                assert.ok(users.every((user) => {
+                    return user.gender === 'female';
+                }));
+
+                return done();
+            });
+    });
+
+    it('Should filter all users by sub property name.title of "miss"', (done) => {
+        supertest(app)
+            .get(userListUrl + '?filter=name.title $eq miss')
+            .expect(httpResponses.OK)
+            .end((err, response) => {
+
+                let users = response.body;
+
+                assert.ok(!err);
+                assert.ok(Array.isArray(users));
+
+                assert.ok(users.every((user) => {
+                    return user.name.title === 'miss';
+                }));
+
+                return done();
+            });
+    });
 });
