@@ -1,13 +1,26 @@
 'use strict';
 
-const httpResponses = require('../config').httpResponses;
+const User = require('../models/User');
+const config = require('../config');
+const httpResponses = config.httpResponses;
+const errorObjects = config.errorObjects;
 
 exports.create = (req, res) => {
     res.status(httpResponses.OK).send('create');
 };
 
 exports.read = (req, res) => {
-    res.status(httpResponses.OK).send('read');
+    User.findOne({ username: req.params.id }, (err, user) => {
+        if (err) {
+            return res.status(httpResponses.SERVER_ERROR).send(errorObjects.SERVER_ERROR);
+        }
+
+        if (!user) {
+            return res.status(httpResponses.NOT_FOUND).send(errorObjects.NOT_FOUND_ERROR);
+        }
+
+        res.status(httpResponses.OK).send(user);
+    });
 };
 
 exports.update = (req, res) => {

@@ -19,8 +19,6 @@ db.on('error', console.error.bind(console, 'Error connecting to Mongo Database:'
 db.once('open', function() {
     console.log('Connected to Mongo Database');
 
-    userRoutes.db = db;
-
     app.listen(config.APP_PORT, () => console.log('User API listening on port 3000!'));
 });
 

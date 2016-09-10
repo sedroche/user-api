@@ -2,7 +2,9 @@
 
 const supertest = require('supertest');
 const app = require('../../server');
-const httpResponses = require('../../config').httpResponses;
+const config = require('../../config');
+const httpResponses = config.httpResponses;
+const errorObjects = config.errorObjects;
 const assert = require('assert');
 
 describe('User API Integration Tests', () => {
@@ -18,13 +20,24 @@ describe('User API Integration Tests', () => {
             });
     });
 
-    it('Should return a new user', (done) => {
+    it('Should return a user', (done) => {
         supertest(app)
-            .get('/user/1234')
+            .get('/user/tinywolf709')
             .expect(httpResponses.OK)
             .end((err, response) => {
                 assert.ok(!err);
-                assert.ok(response.text === 'read');
+                assert.ok(response.body.username === 'tinywolf709');
+                return done();
+            });
+    });
+
+    it('Should return an error for invalid id', (done) => {
+        supertest(app)
+            .get('/user/idDoesNotExist')
+            .expect(httpResponses.NOT_FOUND)
+            .end((err, response) => {
+                assert.ok(!err);
+                assert.ok(response.body.error === errorObjects.NOT_FOUND_ERROR.error);
                 return done();
             });
     });
