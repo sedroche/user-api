@@ -8,7 +8,7 @@ const jsonParser = require('body-parser').json();
 
 app.post('/user', jsonParser, userRoutes.create);
 app.get('/user/:id', userRoutes.read);
-app.put('/user/:id', userRoutes.update);
+app.put('/user/:id', jsonParser, userRoutes.update);
 app.delete('/user/:id', userRoutes.delete);
 app.get('/users', userRoutes.list);
 

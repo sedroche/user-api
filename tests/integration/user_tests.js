@@ -40,17 +40,22 @@ const user = {
     }
 };
 
+const apiUrl = '/user/';
+const sucessUserName = 'tinywolf709';
+const successUserURL = apiUrl + sucessUserName;
+const failUserUrl = apiUrl + 'idDoesNotExist';
+
 describe('User API Integration Tests', () => {
 
     it('Should create a new user', (done) => {
         supertest(app)
-            .post('/user')
+            .post(apiUrl)
             .send(user)
             .expect(httpResponses.CREATED)
             .end((err, response) => {
 
                 assert.ok(!err);
-                assert.ok(response.body.username === 'newUserName');
+                assert.ok(response.body.username === user.username);
                 assert.ok(response.body._id);
 
                 done();
@@ -59,7 +64,7 @@ describe('User API Integration Tests', () => {
 
     it('Should fail to create a new user because of invalid id', (done) => {
         supertest(app)
-            .post('/user')
+            .post(apiUrl)
             .send(user)
             .expect(httpResponses.CONFLICT)
             .end((err, response) => {
@@ -67,18 +72,18 @@ describe('User API Integration Tests', () => {
                 assert.ok(!err);
                 assert.ok(response.body.error === errorObjects.DUPLICATE_KEY_ERROR.error);
 
-                return User.remove({ username: 'newUserName' }, done);
+                return User.remove({ username: user.username }, done);
             });
     });
 
     it('Should return a user', (done) => {
         supertest(app)
-            .get('/user/tinywolf709')
+            .get(successUserURL)
             .expect(httpResponses.OK)
             .end((err, response) => {
 
                 assert.ok(!err);
-                assert.ok(response.body.username === 'tinywolf709');
+                assert.ok(response.body.username === sucessUserName);
 
                 return done();
             });
@@ -86,7 +91,7 @@ describe('User API Integration Tests', () => {
 
     it('Should fail to return a user for invalid id', (done) => {
         supertest(app)
-            .get('/user/idDoesNotExist')
+            .get(failUserUrl)
             .expect(httpResponses.NOT_FOUND)
             .end((err, response) => {
 
@@ -99,12 +104,32 @@ describe('User API Integration Tests', () => {
 
     it('Should update a user', (done) => {
         supertest(app)
-            .put('/user/1234')
+            .put(successUserURL)
+            .send({ gender: 'male' })
             .expect(httpResponses.OK)
             .end((err, response) => {
+
+                let user = response.body;
+
                 assert.ok(!err);
-                assert.ok(response.text === 'update');
-                return done();
+                assert.ok(user.username === sucessUserName);
+                assert.ok(user.gender === 'male');
+
+                return User.findOneAndUpdate({ username: user.username }, { gender: 'female' }, done);
+            });
+    });
+
+    it('Should fail to update a user for invalid id', (done) => {
+        supertest(app)
+            .put(failUserUrl)
+            .send({ gender: 'male' })
+            .expect(httpResponses.NOT_FOUND)
+            .end((err, response) => {
+
+                assert.ok(!err);
+                assert.ok(response.body.error === errorObjects.NOT_FOUND_ERROR.error);
+
+                return User.findOneAndUpdate({ username: user.username }, { gender: 'female' }, done);
             });
     });
 
