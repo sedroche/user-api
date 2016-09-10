@@ -134,12 +134,30 @@ describe('User API Integration Tests', () => {
     });
 
     it('Should delete a user', (done) => {
+        let userModel = new User(user);
+
+        userModel.save((err) => {
+            supertest(app)
+                .delete(apiUrl + user.username)
+                .expect(httpResponses.OK)
+                .end((err, response) => {
+
+                    assert.ok(!err);
+
+                    return done();
+                });
+        });
+    });
+
+    it('Should fail to delete a user for invalid id', (done) => {
         supertest(app)
-            .delete('/user/1234')
-            .expect(httpResponses.OK)
+            .delete(failUserUrl)
+            .expect(httpResponses.NOT_FOUND)
             .end((err, response) => {
+
                 assert.ok(!err);
-                assert.ok(response.text === 'delete');
+                assert.ok(response.body.error === errorObjects.NOT_FOUND_ERROR.error);
+
                 return done();
             });
     });
