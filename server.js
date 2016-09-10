@@ -1,3 +1,5 @@
+'use strict';
+
 const app = require('express')();
 const userRoutes = require('./routes/user');
 
@@ -8,3 +10,5 @@ app.delete('/user/:id', userRoutes.delete);
 app.get('/users', userRoutes.list);
 
 app.listen(3000, () => console.log('User API listening on port 3000!'));
+
+module.exports = app;

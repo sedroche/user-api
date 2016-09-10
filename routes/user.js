@@ -1,4 +1,6 @@
-var httpResponses = require('../config').httpResponses;
+'use strict';
+
+const httpResponses = require('../config').httpResponses;
 
 exports.create = (req, res) => {
     res.status(httpResponses.OK).send('create');
