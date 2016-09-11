@@ -145,6 +145,12 @@ To list all the female users:
 
 - `GET http://localhost:3000/users/?filter=gender $eq female`
 
+###Filter nested objects
+
+The User model has some nested objects like location and name. To filter on those nested properties use dot notation to indicate the path. To filter Users with a first name of melissa:
+
+- `GET http://localhost:3000/users/?filter=name.first $eq melissa`
+
 ###Sort and filter
 
 - `http://localhost:3000/users/?filter=gender $eq female&sort=username`
