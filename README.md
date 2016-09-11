@@ -30,7 +30,7 @@
 
 ## The API
 
-The user-api is a ReST API with CRUDL features.
+The user-api is a ReST API with CRUDL features. I recommend using [Postman](https://www.getpostman.com/) to tst the API
 
 ###Read
 
